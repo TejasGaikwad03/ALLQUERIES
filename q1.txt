@@ -1,0 +1,112 @@
+Question:
+Consider , the following database,
+Student(RollNo, Name, Address)
+Subject (Sub_code, Sub_name)
+Marks (Roll_no, Sub_code, Marks)
+
+ Write the following queries in SQL.
+Find the average marks of each student, along with name of Student
+
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 50
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| demo               |
+| demo1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| student            |
+| studentinformation |
+| sys                |
++--------------------+
+8 rows in set (0.024 sec)
+
+mysql> create database collage;
+Query OK, 1 row affected (0.211 sec)
+
+mysql> use collge;
+ERROR 1049 (42000): Unknown database 'collge'
+mysql> use collage;
+Database changed
+mysql> create table student(RollNo int primary key, Name varchar(10), Address varchar(10));
+Query OK, 0 rows affected (0.239 sec)
+
+mysql> create table subject|(Sub_code int primary key, Sub_name varchar(10));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '|(Sub_code int primary key, Sub_name varchar(10))' at line 1
+mysql> create table subject(Sub_code int primary key, Sub_name varchar(10));
+Query OK, 0 rows affected (0.347 sec)
+
+mysql> create table marks^C
+mysql> create table marks(Roll_no int, Sub_code int, Marks int);
+Query OK, 0 rows affected (0.348 sec)
+
+mysql> insert into student(RollNo, Name, Address) values
+    -> (1, 'rahul', 'Pune'),
+    -> (2, 'raju', 'Mumbai'),
+    -> (3, 'sham', 'Beed');
+Query OK, 3 rows affected (0.183 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into subject(Sub_code, Sub_name) values
+    -> (101,'cs'),
+    -> (102,'mathss'),
+    -> (102,'mathss'),
+    -> (103,'bio');
+ERROR 1062 (23000): Duplicate entry '102' for key 'subject.PRIMARY'
+mysql> insert into subject(Sub_code, Sub_name) values
+    -> (101,'cs'),
+    -> (102,'mathss'),
+    -> (103,'bio');
+Query OK, 3 rows affected (0.174 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into marks(Roll_no, Sub_code, Marks) values
+    ->  (1, 101, 85),
+    ->  (1, 102, 78),
+    -> (1, 103, 92),
+    -> (2, 101, 70),
+    -> (2, 102, 75),
+    -> (2, 103, 80),
+    ->  (3, 101, 60),
+    ->  (3, 102, 65),
+    ->  (3, 103, 69),
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 10
+mysql> insert into marks(Roll_no, Sub_code, Marks) values
+    ->  (1, 101, 85),
+    ->  (1, 102, 78),
+    -> (1, 103, 92),
+    -> (2, 101, 70),
+    -> (2, 102, 75),
+    -> (2, 103, 80),
+    ->  (3, 101, 60),
+    ->  (3, 102, 65),
+    ->  (3, 103, 69);
+Query OK, 9 rows affected (0.061 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> select s.RollNo,s.Name, AVG(m.Marks) as Avg_Marks from Student s join Marks m on s.RollNo = m.Roll_no group by s.RollNo,s.Name;
++--------+-------+-----------+
+| RollNo | Name  | Avg_Marks |
++--------+-------+-----------+
+|      1 | rahul |   85.0000 |
+|      2 | raju  |   75.0000 |
+|      3 | sham  |   64.6667 |
++--------+-------+-----------+
+3 rows in set (0.206 sec)
+
+mysql>

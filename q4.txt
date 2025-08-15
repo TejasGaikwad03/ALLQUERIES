@@ -1,0 +1,143 @@
+Question:
+35.Consider the following relational schemaEmployee
+(empno,name,office,age)Books(isbn,title,authors,publisher)Loan(empno, isbn,date)
+Write the following queries in relational algebra.
+a.Find the names of employees who have borrowed a book Published byMcGraw-Hill.
+b.Find the names of employees who have borrowed all books Published byMcGraw-Hill.
+c.Find the names of employees who have borrowed more than five different books
+published by McGraw-Hill.
+d.For each publisher, find the names of employees who have borrowed more than five
+books of that publisher
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 55
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| airport            |
+| collage            |
+| demo               |
+| demo1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| student            |
+| studentinformation |
+| sys                |
+| xyz                |
++--------------------+
+11 rows in set (0.027 sec)
+
+mysql> create database book;
+Query OK, 1 row affected (0.211 sec)
+
+mysql> use book;
+Database changed
+mysql> create table schemaEmployee(empno int,name varchar(20),office varchar(20),age int);
+Query OK, 0 rows affected (0.335 sec)
+
+mysql>  create table Books(isbn int ,title varchar(20),authors varchar(20),publisher varchar(20));
+Query OK, 0 rows affected (0.347 sec)
+
+mysql> create table Loan(empno int, isbn int,date date);
+Query OK, 0 rows affected (0.342 sec)
+
+mysql> INSERT INTO schemaEmployee (empno, name, office, age) VALUES
+    -> (1,'gaurav','mumbai',30),
+    -> (2,'Tejas','pune',28),
+    -> (3,'Kishor','Delhi',35),
+    -> (3,'Kishor','Delhi',35),
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 5
+mysql> INSERT INTO schemaEmployee (empno, name, office, age) VALUES
+    -> (1,'gaurav','mumbai',30),
+    -> (2,'Tejas','pune',28),
+    -> (3,'Kishor','Delhi',35),
+    -> (4,'Pranav','baramati',32),
+    -> (5,'Mauli','Latur',29);
+Query OK, 5 rows affected (0.206 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Books (isbn, title, authors, publisher) VALUES
+    -> (101, 'DBMS Concepts', 'Korth', 'McGraw-Hill'),
+    -> (102, 'Data Structures', 'Seymour', 'McGraw-Hill'),
+    -> (103, 'Operating Systems', 'Silberschatz', 'Pearson'),
+    -> (104, 'Networking', 'Tanenbaum', 'McGraw-Hill'),
+    -> (105, 'Java Programming', 'Deitel', 'Pearson'),
+    -> (106, 'Python Basics', 'Guido', 'McGraw-Hill'),
+    ->  (107, 'Algorithms', 'Cormen', 'McGraw-Hill'),
+    -> (108, 'AI Fundamentals', 'Russell', 'Pearson');
+Query OK, 8 rows affected (0.191 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql>  INSERT INTO Loan (empno, isbn, date) VALUES
+    -> (1, 101, '2025-08-01'),
+    -> (1, 102, '2025-08-02'),
+    -> (1, 104, '2025-08-05'),
+    -> (1, 106, '2025-08-06'),
+    -> (1, 107, '2025-08-08'),
+    -> (2, 101, '2025-08-01'),
+    -> (2, 102, '2025-08-03'),
+    -> (3, 103, '2025-08-02'),
+    ->  (3, 105, '2025-08-04'),
+    -> (4, 104, '2025-08-05'),
+    -> (4, 104, '2025-08-05'),
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 12
+mysql>  INSERT INTO Loan (empno, isbn, date) VALUES
+    -> (1, 101, '2025-08-01'),
+    -> (1, 102, '2025-08-02'),
+    -> (1, 104, '2025-08-05'),
+    -> (1, 106, '2025-08-06'),
+    -> (1, 107, '2025-08-08'),
+    -> (2, 101, '2025-08-01'),
+    -> (2, 102, '2025-08-03'),
+    -> (3, 103, '2025-08-02'),
+    ->  (3, 105, '2025-08-04'),
+    -> (4, 104, '2025-08-05'),
+    -> (4, 106, '2025-08-06'),
+    -> (4, 107, '2025-08-07'),
+    -> (5, 101, '2025-08-01'),
+    -> (5, 102, '2025-08-02'),
+    -> (5, 104, '2025-08-03'),
+    -> (5, 106, '2025-08-04'),
+    -> (5, 107, '2025-08-05');
+Query OK, 17 rows affected (0.081 sec)
+Records: 17  Duplicates: 0  Warnings: 0
+
+mysql> select distinct e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn where b.publisher='McGraw-Hill';
++--------+
+| name   |
++--------+
+| gaurav |
+| Tejas  |
+| Pranav |
+| Mauli  |
++--------+
+4 rows in set (0.141 sec)
+
+mysql> select e.name from schemaemployee e where not exists (select 1 from books b where b.publisher='McGraw-Hill' and not exists (select 1 from loan l where l.empno=e.empno and l.isbn=b.isbn));
++--------+
+| name   |
++--------+
+| gaurav |
+| Mauli  |
++--------+
+2 rows in set (0.016 sec)
+
+mysql>  select e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn where b.publisher='McGraw-Hill' group by e.empno, e.name having count(distinct b.isbn)>5;
+Empty set (0.168 sec)
+
+mysql> select b.publisher, e.name from schemaemployee e join loan l on e.empno=l.empno join books b on l.isbn=b.isbn group by b.publisher, e.empno, e.name having count(l.isbn)>5;
+Empty set (0.020 sec)

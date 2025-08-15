@@ -1,0 +1,167 @@
+Question:
+
+34.Consider the following tables:Employee (Emp_no, Name, Emp_city)Company (Emp_no,
+Company_name, Salary)
+i.Write a SQL query to display Employeename and company name.
+ii.Write a SQL query to display employeename, employee city ,company name andsalary
+of all the employees whose salary>10000
+iii.Write a query to display all the employees working in “XYZ company
+
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 54
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| airport            |
+| collage            |
+| demo               |
+| demo1              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| student            |
+| studentinformation |
+| sys                |
++--------------------+
+10 rows in set (0.033 sec)
+
+mysql> create database xyz;
+Query OK, 1 row affected (0.218 sec)
+
+mysql> use xyz;
+Database changed
+mysql> create table employee;
+ERROR 4028 (HY000): A table must have at least one visible column.
+mysql> create table Employee (Emp_no int, Name varchar(20), Emp_city varchar(20));
+Query OK, 0 rows affected (0.358 sec)
+
+mysql> insert into employee values
+    -> (1,'Amit','Mumbai'),
+    -> (2,'Gaurav','pune'),
+    -> (3,'Tejas','mumbai'),
+    -> (4,'Mauli','dharashiv'),
+    -> (5,'Kishor','Beed'),
+    -> (6,'Pranav','Baramati');
+Query OK, 6 rows affected (0.201 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> create table company(Emp_no int ,Company_name varchar(20), Salary int);
+Query OK, 0 rows affected (0.374 sec)
+
+
+mysql> insert into company values
+    -> (1,'Infosys',50000),
+    -> (2,'TCS',55000),
+    -> (3,'Wipro',65000),
+    -> (4,'Google',100000),
+    -> (5,'Amazon',111000),
+    -> (6,'Microsoft',110000);
+Query OK, 6 rows affected (0.206 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> select Name,Company_name from employee,company;
++--------+--------------+
+| Name   | Company_name |
++--------+--------------+
+| Pranav | Infosys      |
+| Kishor | Infosys      |
+| Mauli  | Infosys      |
+| Tejas  | Infosys      |
+| Gaurav | Infosys      |
+| Amit   | Infosys      |
+| Pranav | TCS          |
+| Kishor | TCS          |
+| Mauli  | TCS          |
+| Tejas  | TCS          |
+| Gaurav | TCS          |
+| Amit   | TCS          |
+| Pranav | Wipro        |
+| Kishor | Wipro        |
+| Mauli  | Wipro        |
+| Tejas  | Wipro        |
+| Gaurav | Wipro        |
+| Amit   | Wipro        |
+| Pranav | Google       |
+| Kishor | Google       |
+| Mauli  | Google       |
+| Tejas  | Google       |
+| Gaurav | Google       |
+| Amit   | Google       |
+| Pranav | Amazon       |
+| Kishor | Amazon       |
+| Mauli  | Amazon       |
+| Tejas  | Amazon       |
+| Gaurav | Amazon       |
+| Amit   | Amazon       |
+| Pranav | Microsoft    |
+| Kishor | Microsoft    |
+| Mauli  | Microsoft    |
+| Tejas  | Microsoft    |
+| Gaurav | Microsoft    |
+| Amit   | Microsoft    |
++--------+--------------+
+36 rows in set (0.012 sec)
+
+mysql> select e.name,c.Company_name
+    -> from employee e,
+    -> company c
+    -> where e.Emp_no=c.Emp_no;
++--------+--------------+
+| name   | Company_name |
++--------+--------------+
+| Amit   | Infosys      |
+| Gaurav | TCS          |
+| Tejas  | Wipro        |
+| Mauli  | Google       |
+| Kishor | Amazon       |
+| Pranav | Microsoft    |
++--------+--------------+
+6 rows in set (0.013 sec)
+
+mysql> SELECT
+    ->     e.Name AS employeeName,
+    ->     e.Emp_city AS employeecity,
+    ->     c.Company_name AS companyname,
+    ->     c.salary
+    -> FROM
+    ->     employee e
+    -> JOIN
+    ->     company c ON e.Emp_no = c.Emp_no
+    -> WHERE
+    ->     c.salary > 10000;
++--------------+--------------+-------------+--------+
+| employeeName | employeecity | companyname | salary |
++--------------+--------------+-------------+--------+
+| Amit         | Mumbai       | Infosys     |  50000 |
+| Gaurav       | pune         | TCS         |  55000 |
+| Tejas        | mumbai       | Wipro       |  65000 |
+| Mauli        | dharashiv    | Google      | 100000 |
+| Kishor       | Beed         | Amazon      | 111000 |
+| Pranav       | Baramati     | Microsoft   | 110000 |
++--------------+--------------+-------------+--------+
+6 rows in set (0.016 sec)
+
+mysql> select Name as employeename,
+    -> Emp_city as employeecity
+    -> from employee
+    -> where Emp_no in(select Emp_no from company where Company_name='Google');
++--------------+--------------+
+| employeename | employeecity |
++--------------+--------------+
+| Mauli        | dharashiv    |
++--------------+--------------+
+1 row in set (0.017 sec)
+
+mysql>
